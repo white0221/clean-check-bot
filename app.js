@@ -7,7 +7,18 @@ const app = new App({
 
 const NAMES = ['ROOM_A', 'ROOM_B', 'ROOM_C'];
 
-const BASE_MESSAGE = { "blocks": [] };
+const BASE_MESSAGE = {
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "掃除したらボタンを押してくださいね",
+        "emoji": true
+      }
+    }
+  ]
+};
 
 function createMessage(names) {
   var message = BASE_MESSAGE;
@@ -43,15 +54,14 @@ function createDoneMessage(user, room) {
     "type": "section",
     "text": {
       "type": "mrkdwn",
-      "text": "*" + room + "* の掃除完了！ by *" + user + "*"
+      "text": "*" + room + "* の掃除完了:+1: cleaned by *" + user + "*"
     }
   }
 }
 
 function messageUpdate(message, user, value) {
   for (let i in message.blocks) {
-    if (('accessory' in message.blocks[i]) &&
-      (message.blocks[i].accessory.value === value)) {
+    if (('accessory' in message.blocks[i]) && (message.blocks[i].accessory.value === value)) {
       message.blocks[i] = createDoneMessage(user, value);
     }
   }
