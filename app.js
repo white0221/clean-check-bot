@@ -6,44 +6,44 @@ const app = new App({
 });
 
 var MESSAGE = {
-	"blocks": [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "INNOVATION & TECHNOLOGY"
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "INNOVATION & TECHNOLOGY"
       },
-			"accessory": {
-				"type": "button",
-				"text": {
-					"type": "plain_text",
-					"text": "DONE",
-					"emoji": true
-				},
-				"value": "innovation_technology",
+      "accessory": {
+        "type": "button",
+        "text": {
+          "type": "plain_text",
+          "text": "DONE",
+          "emoji": true
+        },
+        "value": "innovation_technology",
         "style": "primary",
-				"action_id": "button"
-			}
-		},
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "TOKYO & REAL"
-			},
-			"accessory": {
-				"type": "button",
-				"text": {
-					"type": "plain_text",
-					"text": "DONE",
-					"emoji": true
-				},
+        "action_id": "button"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "TOKYO & REAL"
+      },
+      "accessory": {
+        "type": "button",
+        "text": {
+          "type": "plain_text",
+          "text": "DONE",
+          "emoji": true
+        },
         "value": "tokyo_real",
         "style": "primary",
         "action_id": "button"
-			}
-		}
-	]
+      }
+    }
+  ]
 }
 
 function createDoneMessage(user, room) {
@@ -81,6 +81,5 @@ app.action('button', async({ body, ack, respond }) => {
 
 (async () => {
   await app.start(process.env.PORT || 3000);
-
   console.log('Bolt app is running');
 })();
