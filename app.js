@@ -7,18 +7,7 @@ const app = new App({
 
 const NAMES = ['ROOM_A', 'ROOM_B', 'ROOM_C'];
 
-const BASE_MESSAGE = {
-  "blocks": [
-    {
-      "type": "section",
-      "text": {
-        "type": "plain_text",
-        "text": "掃除チェックシート",
-        "emoji": true
-      }
-    }
-  ]
-};
+const BASE_MESSAGE = { "blocks": [] };
 
 function createMessage(names) {
   var message = BASE_MESSAGE;
@@ -61,8 +50,8 @@ function createDoneMessage(user, room) {
 
 function messageUpdate(message, user, value) {
   for (let i in message.blocks) {
-    console.log(message.blocks[i]);
-    if (message.blocks[i].accessory.value === value) {
+    if (('accessory' in message.blocks[i]) &&
+      (message.blocks[i].accessory.value === value)) {
       message.blocks[i] = createDoneMessage(user, value);
     }
   }
@@ -77,7 +66,7 @@ app.message('hello', async({ say }) => {
 app.action('button', async({ body, ack, respond }) => {
   await ack();
   console.log('button clicked!');
-  let message = { "message": body.message.blocks };
+  let message = { "blocks": body.message.blocks };
   await respond(messageUpdate(message, body.user.name, body.actions[0].value));
 });
 
