@@ -5,14 +5,14 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-var message = {
+var MESSAGE = {
 	"blocks": [
 		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
 				"text": "INNOVATION & TECHNOLOGY"
-			},
+      },
 			"accessory": {
 				"type": "button",
 				"text": {
@@ -46,14 +46,37 @@ var message = {
 	]
 }
 
+function createDoneMessage(user, room) {
+  return {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*" + room + "* の掃除完了！ by *" + user + "*"
+    }
+  }
+}
+
+function messageUpdate(user, value) {
+  console.log(value);
+  var message = MESSAGE;
+  for (let i in message.blocks) {
+    console.log(message.blocks[i]);
+    if (message.blocks[i].accessory.value === value) {
+      message.blocks[i] = createDoneMessage('ryo', value);
+    }
+  }
+  return message
+};
+
 app.message('hello', async({ say }) => {
-  await say(message);
+  await say(MESSAGE);
 });
 
 app.action('button', async({ body, ack, respond }) => {
   await ack();
   console.log(body);
-  await respond('done!');
+  let mes = messageUpdate(body.user.name, body.actions[0].value)
+  await respond(mes);
 });
 
 (async () => {
