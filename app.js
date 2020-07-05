@@ -5,45 +5,48 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-var MESSAGE = {
+const NAMES = ['ROOM_A', 'ROOM_B', 'ROOM_C'];
+
+const BASE_MESSAGE = {
   "blocks": [
     {
       "type": "section",
       "text": {
-        "type": "mrkdwn",
-        "text": "INNOVATION & TECHNOLOGY"
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "DONE",
-          "emoji": true
-        },
-        "value": "innovation_technology",
-        "style": "primary",
-        "action_id": "button"
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "TOKYO & REAL"
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "DONE",
-          "emoji": true
-        },
-        "value": "tokyo_real",
-        "style": "primary",
-        "action_id": "button"
+        "type": "plain_text",
+        "text": "掃除チェックシート",
+        "emoji": true
       }
     }
   ]
+};
+
+function createMessage(names) {
+  var message = BASE_MESSAGE;
+  for (let name of names) {
+    message.blocks.push(createSection(name));
+  }
+  return message
+}
+
+function createSection(text) {
+  return {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": text
+    },
+    "accessory": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "DONE",
+        "emoji": true
+      },
+      "value": text,
+      "style": "primary",
+      "action_id": "button"
+    }
+  }
 }
 
 function createDoneMessage(user, room) {
@@ -56,27 +59,26 @@ function createDoneMessage(user, room) {
   }
 }
 
-function messageUpdate(user, value) {
-  console.log(value);
-  var message = MESSAGE;
+function messageUpdate(message, user, value) {
   for (let i in message.blocks) {
     console.log(message.blocks[i]);
     if (message.blocks[i].accessory.value === value) {
-      message.blocks[i] = createDoneMessage('ryo', value);
+      message.blocks[i] = createDoneMessage(user, value);
     }
   }
   return message
 };
 
 app.message('hello', async({ say }) => {
-  await say(MESSAGE);
+  console.log('called');
+  await say(createMessage(NAMES));
 });
 
 app.action('button', async({ body, ack, respond }) => {
   await ack();
-  console.log(body);
-  let mes = messageUpdate(body.user.name, body.actions[0].value)
-  await respond(mes);
+  console.log('button clicked!');
+  let message = { "message": body.message.blocks };
+  await respond(messageUpdate(message, body.user.name, body.actions[0].value));
 });
 
 (async () => {
