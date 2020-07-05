@@ -1,39 +1,59 @@
-const { App } = require('@slack/bolt');
+const { App } = require('@slack/bolt'); 
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-var MESSAGE = {
-  "blocks": [
-  {
-    "type": "divider"
-  },
-  {
-    "type": "section",
-    "text": {
-      "type": "mrkdwn",
-      "text": "ROOM A"
-    },
-    "accessory": {
-      "type": "button",
-      "text": {
-        "type": "plain_text",
-        "text": "掃除完了",
-      },
-      "style": "primary",
-      "value": "room_a"
-    }
-  },
-  {
-    "type": "divider"
-  }
-  ]
+var message = {
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "INNOVATION & TECHNOLOGY"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": "DONE",
+					"emoji": true
+				},
+				"value": "innovation_technology",
+        "style": "primary",
+				"action_id": "button"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "TOKYO & REAL"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": "DONE",
+					"emoji": true
+				},
+        "value": "tokyo_real",
+        "style": "primary",
+        "action_id": "button"
+			}
+		}
+	]
 }
 
-app.message('hello', async({ message, say }) => {
-  await say(MESSAGE);
+app.message('hello', async({ say }) => {
+  await say(message);
+});
+
+app.action('button', async({ body, ack, respond }) => {
+  await ack();
+  console.log(body);
+  await respond('done!');
 });
 
 (async () => {
@@ -41,4 +61,3 @@ app.message('hello', async({ message, say }) => {
 
   console.log('Bolt app is running');
 })();
-
